@@ -1,0 +1,84 @@
+\documentclass{jsarticle}
+\usepackage{moreverb}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{float}
+
+\title{計算機実習課題 6-14 外力を受けた減衰振り子}
+\author{早稲田大学先進理工学部物理学科 B4 藤本將太郎}
+\date{2014/05/17}
+
+\begin{document}
+\maketitle
+    
+    \section{シミュレーションの目的}
+        古典力学で記述される非線形力学系のよく知られた例である単振り子について、一次の減衰項があって、振り子の支点が垂直方向に動かされる場合を考えよう。この系に対するニュートンの第2法則は
+        \begin{equation}
+            \frac{ d^{2}\theta }{ dt^{2} } = -\gamma \frac{ d\theta }{dt}-[\omega_{0}^{2} + 2A \cos \omega t]\sin \theta
+            \label{eq:e1}
+        \end{equation}
+        と書き表される。ここで$\theta$は振り子が鉛直軸となす角度、$\gamma$は減衰定数、$\omega_{0}^{2}=g/L$は振り子の自然振動数、$\omega$と$A$はそれぞれ外力の振動数と振幅である。支点を垂直方向に加速することは時間に依存する重力場を考えることと等価である。
+        この外力を受けた減衰のある単振り子はどのように振る舞うと予想されるか。減衰項が存在するために、外力がないときには振り子は静止してしまう。つまり、($x=0$、$y=0$)は安定なアトラクタである。$A$を0から大きくしていくとき、小さな$A$に対してはこのアトラクタは安定である。しかし、$A$がある値$\mathrm{A}_{c}$を超えると、このアトラクタは不安定となる。振幅$A$を大きくしていくとき、この外力を受けた非線形な振り子はどのように振る舞うだろうか。運動の(安定と不安定)固定点に主に興味があるので、外力の周期Tごとに位相空間に点をプロットして、運動の解析を行うのがよい。位相空間におけるそのような図はポアンカレ(Poincar\'{e})・プロットと呼ばれている。したがって、$n=1,2,3\cdots$として、$t=n\mathrm{T}$で$d\theta/ dt$を$\theta$に対してプロットする。系の周期がTの時にはポアンカレ・プロットは単一の点からなり、周期が$m\mathrm{T}$のときには$m$個の点からなる。
+
+    \section{作成したプログラム}
+    
+        \subsection{パラメータの設定ダイアログ(SetParameter.py)}
+            以前まで使用していたものを改良してある。show\_setting\_windowに渡す引数は、パラメータの名前とデフォルト値をセットにして辞書にしたもののリストと、ボタンに表示するテキストをキーとし、コマンドをその値とした辞書である。これによって更に拡張した使い方ができるようになった。
+            \listinginput{1}{SetParameter.py}
+            
+        \subsection{4次のルンゲクッタ法で1ステップの計算を行うプログラム(runge\_kutta.py)}
+            4次のルンゲクッタ法を用いて、tの時の値yをもとにt+hのときの値を返すプログラムとなっている。引数として渡す関数と可変長の変数yを変えれば、一般に用いることのできるモジュールとなっている。
+            \listinginput{1}{runge_kutta.py}
+            
+        \subsection{課題aの実行プログラム(\_6-14\_poincare\_a.py)}
+            課題aで用いたプログラムで、外力の周期Tごとに$d\theta/ dt$を$\theta$に対してプロットする。アニメーションで表示させるためにplt.ion()でpyplotのインタラクティブモードをオンにしている。しかし、そのままにすると最後のプロットが終了した時点でウィンドウが閉じてしまうので、最後のプロットでインタラクティブモードをオフにするようにした。
+            \listinginput{1}{_6-14_poincare_a.py}
+            
+        \subsection{課題bの実行プログラム(\_6-14\_poincare\_b.py)}
+            課題bで用いたプログラムで、$\theta$と$d\theta /dt$を$t$の関数としてプロットする。同時に表示させるためにsubplotを利用している。また、aとは異なり、すべての演算を終えてから一度に表示させるようにしてある。
+            \listinginput{1}{_6-14_poincare_b.py}
+            
+    \section{実習課題}
+    
+        \begin{enumerate}
+            \renewcommand{\labelenumi}{\alph{enumi}.}
+            \renewcommand{\labelenumii}{}
+            
+            \item  外力を受けた単純減衰振り子のシミュレーションを行え。プログラムでは、外力の周期Tが$\pi$に等しくなるように$\omega=2$、また、$\omega_{0}=1$を仮定してよい。$\gamma=0.2$と$A=0.85$を用いて、位相空間の軌跡を計算せよ。初期の過渡現象の後に、ポアンカレ・プロットには何個の点があるか。このことから振り子の周期はいくらか求めよ。$\theta$と$d\theta /dt$の初期値を変えてみよ。アトラクタは初期条件に依存しないか。初期の過渡現象を無視することを忘れないこと。
+            
+                \begin{enumerate}
+                    \item $\gamma=0.2$と$A=0.85$として初期値$\theta=0.3$、$d\theta /dt=0$として位相空間に外力の周期Tごとに200回計算を行い、うち最後の100回をプロットした。このポアンカレ・プロットを図\ref{fig:f1}に示す。図\ref{fig:f1}にはプロットされている点が2つしかないため、振り子の周期は$2\mathrm{T}=2\pi$であることがわかる。また、自明なことではあるが、アトラクタの位置は初期条件に依存する。ただし、振り子の周期は、運動の固定点以外であれば変わらない。固定点では周期1である。
+                    \begin{figure}[H]
+                        \begin{center}
+                        \includegraphics[width=12.5cm]{figure_1.pdf}
+                        \caption{$\gamma=0.2$、$A=0.85$としたときのポアンカレ・プロット}
+                        \label{fig:f1}
+                        \end{center}
+                    \end{figure}                    
+                \end{enumerate}    
+            
+            \item $\theta$と$d\theta /dt$を$t$の関数としてプロットせよ。そしてポアンカレ・プロット、位相空間の図、$\theta$や$d\theta /dt$の$t$依存性の関係を定性的に述べよ。
+                \begin{enumerate}
+                    \item $\theta$と$d\theta /dt$を$t$の関数としてプロットしたものを図\ref{fig:f2}に示す。図\ref{fig:f2}を見ると、tの大きいところでは$\theta$と$d\theta /dt$はtに対して周期関数として振舞っていることがわかる。これは先程ポアンカレ・プロットより得られた理解と一致する。
+                    \begin{figure}[H]
+                        \begin{center}
+                        \includegraphics[width=12.5cm]{figure_2.pdf}
+                        \caption{$\theta=0.3$、$d\theta /dt = l0.0$、$\gamma=0.2$、$A=0.85$のときの$t-\theta$、$t-d\theta /dt$のグラフ}
+                        \label{fig:f2}
+                        \end{center}
+                    \end{figure}
+                    
+                    
+                    
+                \end{enumerate} 
+                
+        \end{enumerate}
+    
+    \section{まとめ}
+
+    \section{参考文献}
+        \begin{itemize}
+            \item ハーベイ・ゴールド,ジャン・トボチニク,石川正勝・宮島佐介訳『計算物理学入
+            門』,ピアソン・エデュケーション, 2000.
+        \end{itemize}
+
+\end{document}
