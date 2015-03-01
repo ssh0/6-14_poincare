@@ -31,7 +31,7 @@ def assignment():
     plot(function=force)
 
 
-def force(t, *y):
+def force(t, y):
     theta = y[0]
     ang_vel = y[1]
     return np.array([ang_vel,

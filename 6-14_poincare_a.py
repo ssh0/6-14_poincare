@@ -35,11 +35,10 @@ def assignment():
     plot(y=np.array([theta, ang_vel]), function=force)
 
 
-def force(t, *y):
+def force(t, y):
     theta = y[0]
     ang_vel = y[1]
-    return np.array([ang_vel,
-                     -gamma * ang_vel -
+    return np.array([ang_vel, -gamma * ang_vel -
                    (omega0 ** 2 + 2 * A * cos(omega * t)) * sin(theta)
     ])
 
